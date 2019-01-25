@@ -6,9 +6,9 @@ const { InMemoryCache } = require("apollo-cache-inmemory");
 const { onError } = require("apollo-link-error");
 
 module.exports = {
-  logout: to => {
+  logout: (to, cookieName) => {
     // remove cookie and reload page to reset apollo client
-    Cookies.expire("authToken");
+    Cookies.expire(cookieName || "authToken");
 
     if (to) {
       window.location.replace(to);
@@ -16,10 +16,10 @@ module.exports = {
       window.location.reload();
     }
   },
-  setAuthCookie: token => {
-    Cookies.set("authToken", token);
+  setAuthCookie: (token, cookieName) => {
+    Cookies.set(cookieName || "authToken", token);
   },
-  createApolloClient({ uri, initialState }) {
+  createApolloClient({ uri, initialState, cookieName }) {
     // taken from
     // - https://github.com/apollographql/GitHunt-React/blob/master/src/links.js
     // - https://www.apollographql.com/docs/react/features/error-handling.html
@@ -41,7 +41,7 @@ module.exports = {
     });
 
     const authLink = new ApolloLink((operation, forward) => {
-      const token = Cookies.get("authToken");
+      const token = Cookies.get(cookieName || "authToken");
       if (token) {
         const authorizationHeader = `Bearer ${token}`;
         operation.setContext({
