@@ -58,7 +58,7 @@ module.exports = {
         new HttpLink({ uri, credentials: "include" })
       ]),
       connectToDevTools: true,
-      cache: new InMemoryCache().restore(uri, initialState)
+      cache: new InMemoryCache().restore(initialState)
     });
 
     return apolloClient;
